@@ -1,11 +1,8 @@
-.MODEL SMALL
+IDEAL
+MODEL small
+STACK 256
 
-STACK SEGMENT PARA STACK
-	DB 2048 DUP (" ")
-STACK ENDS
-
-
-.DATA
+DATASEG
 	GAME_WIDTH DW 140h
 	
 	DINO_Y DW 90h
@@ -50,9 +47,9 @@ STACK ENDS
 	HIGHSCORE DW 0h
 	SCORE_PRES DW 0h
 		
-.code
+CODESEG
 
-GAMEOVER_GAM MACRO
+MACRO GAMEOVER_GAM 
 	
 	mov ah, 02h
 	mov bh, 00h
@@ -74,7 +71,7 @@ GAMEOVER_GAM MACRO
 	
 ENDM
 
-main PROC near
+PROC main  near
 
 	call CLEAR_SCREEN
 	TIME_CHECK:
@@ -82,18 +79,18 @@ main PROC near
 		mov ah, 2ch
 		int 21h
 		
-		cmp dl, TIME_VAR
+		cmp dl, [TIME_VAR]
 		JE TIME_CHECK
 		
-		inc SCORE_TIME
-		cmp SCORE_TIME, 5h
+		inc [SCORE_TIME]
+		cmp [SCORE_TIME], 5h
 		jne NO_SCORE
 		call UPDATE_SCORE
-		mov SCORE_TIME, 00h
+		mov [SCORE_TIME], 00h
 		
 		NO_SCORE:
 		call COLLISION_CHECK
-		cmp EXIT_FLAG, 00h
+		cmp [EXIT_FLAG], 00h
 		jne GAMEOVER
 		jmp GAMEON
 		
@@ -105,16 +102,16 @@ main PROC near
 		GAMEON:
 		call CACTUS_MOVE
 		call BIRD_MOVE
-		mov TIME_VAR, dl
+		mov [TIME_VAR], dl
 		call CLEAR_SCREEN
 		call GROUND_DRAW
 		call DINO_MOVE
-		cmp FLAG2, 1h
-		je NUNDUK
+		cmp [FLAG2], 1h
+		je SCHAR
 		call DINO_DRAW_STAND
 		jmp EXIT3
 		
-		NUNDUK:
+		SCHAR:
 		call DINO_DRAW_CROUCH
 		;;;;;;;;;;;;;;;;;;;;;;;;
 		;mov FLAG2, 00h
@@ -128,11 +125,11 @@ main PROC near
 		call DRAW_HSCORE
 		jmp TIME_CHECK
 	EXIT5:
-	RET
+	RET                          
 	
-main ENDP
+ENDP main 
 
-GROUND_DRAW PROC near
+PROC GROUND_DRAW  near
 	mov dl, 00h
 	CHAR1_LOOP:
 		mov ah, 02h
@@ -140,7 +137,6 @@ GROUND_DRAW PROC near
 		mov dh, 12h
 		int 10h
 		mov ah, 09h
-		mov al, 12h
 		mov al, 28h   ;char1
 		mov bh, 00h
 		mov bl, 0fh
@@ -154,7 +150,7 @@ GROUND_DRAW PROC near
 		int 10h
 		mov ah, 09h
 		mov al, 3ah   ;char2
-		mov bh, 00h
+		mov bh, 00h 
 		mov bl, 0fh
 		mov cx, 01h
 		int 10h
@@ -162,53 +158,53 @@ GROUND_DRAW PROC near
 		cmp dl, 28h
 		jne CHAR1_LOOP
 	RET
-GROUND_DRAW ENDP
+ENDP GROUND_DRAW 
 
-DINO_DRAW_STAND PROC near
-	mov DINO_Y_SIZE, 16h
-	mov cx, DINO_X
-	mov dx, DINO_Y
-	sub cx, DINO_X_SIZE
-	sub dx, DINO_Y_SIZE
+PROC DINO_DRAW_STAND  near
+	mov [DINO_Y_SIZE], 16h
+	mov cx, [DINO_X]
+	mov dx, [DINO_Y]
+	sub cx, [DINO_X_SIZE]
+	sub dx, [DINO_Y_SIZE]
 	DINO_DRAWB_H:
 		mov ah, 0ch
 		mov al, 0fh
 		mov bh, 00h
 		int 10h
 		inc cx
-		cmp cx, DINO_X
+		cmp cx, [DINO_X]
 		jne DINO_DRAWB_H
 	DINO_DRAWB_V:
-		mov cx, DINO_X
-		sub cx, DINO_X_SIZE
+		mov cx, [DINO_X]
+		sub cx, [DINO_X_SIZE]
 		inc dx
-		cmp dx, DINO_Y
+		cmp dx, [DINO_Y]
 		jne DINO_DRAWB_H	
 	RET
-DINO_DRAW_STAND ENDP
+ENDP DINO_DRAW_STAND 
 
-DINO_DRAW_CROUCH PROC near
-	mov DINO_Y_SIZE, 8h
-	mov cx, DINO_X
-	mov dx, DINO_Y
-	sub cx, DINO_X_SIZE
-	sub dx, DINO_Y_SIZE
+PROC DINO_DRAW_CROUCH  near
+	mov [DINO_Y_SIZE], 8h
+	mov cx, [DINO_X]
+	mov dx, [DINO_Y]
+	sub cx, [DINO_X_SIZE]
+	sub dx, [DINO_Y_SIZE]
 	DINO_DRAWBC_H:
 		mov ah, 0ch
 		mov al, 0fh
 		mov bh, 00h
 		int 10h
 		inc cx
-		cmp cx, DINO_X
+		cmp cx, [DINO_X]
 		jne DINO_DRAWBC_H
 	DINO_DRAWBC_V:
-		mov cx, DINO_X
-		sub cx, DINO_X_SIZE
+		mov cx, [DINO_X]
+		sub cx, [DINO_X_SIZE]
 		inc dx
-		cmp dx, DINO_Y
+		cmp dx, [DINO_Y]
 		jne DINO_DRAWBC_H
-	mov cx, DINO_X
-	mov dx, DINO_Y
+	mov cx, [DINO_X]
+	mov dx, [DINO_Y]
 	sub dx, 8h
 	add cx, 06h
 	DINO_DRAWH_HEAD:
@@ -217,24 +213,24 @@ DINO_DRAW_CROUCH PROC near
 		mov bh, 00h
 		int 10h
 		dec cx
-		cmp cx, DINO_X
+		cmp cx, [DINO_X]
 		jne DINO_DRAWH_HEAD
 	DINO_DRAWV_HEAD:
-		mov cx, DINO_X
+		mov cx, [DINO_X]
 		add cx, 06h
 		inc dx
-		mov bx, DINO_Y
+		mov bx, [DINO_Y]
 		sub bx, 5h
 		cmp dx, bx
 		mov bx, 0h
 		jne DINO_DRAWH_HEAD
 	RET
 	
-DINO_DRAW_CROUCH ENDP 
+ENDP DINO_DRAW_CROUCH  
 
-DINO_MOVE PROC near
+PROC DINO_MOVE  near
 
-	cmp DINO_Y, 90h
+	cmp [DINO_Y], 90h
 	jne MOVE_DINO_UP
 	
 	mov ah, 01
@@ -264,163 +260,164 @@ DINO_MOVE PROC near
 		cmp al, 73h
 		je MOVE_DINO_DOWN
 		MOVEUP1:
-		mov FLAG2, 00h
-		mov ax, FLAG1
+		mov [FLAG2], 00h
+		mov ax, [FLAG1]
 		cmp ax, 01h
 		je MOVEDOWN
 		
 		MOVEUP:
-			sub DINO_Y, 05h
-			mov bx, DINO_Y
-			cmp DINO_Y, 40h
+			sub [DINO_Y], 05h
+			mov bx, [DINO_Y]
+			cmp [DINO_Y], 40h
 			jnl EXIT_KEY
 			inc ax
-			mov FLAG1, ax
+			
+			mov [FLAG1], ax
 		
 		MOVEDOWN:
-			add DINO_Y, 05h
-			cmp DINO_Y, 90h
+			add [DINO_Y], 05h
+			cmp [DINO_Y], 90h
 			jng EXIT_KEY
-			mov DINO_Y, 90h
-			mov ax, FLAG1
+			mov [DINO_Y], 90h
+			mov ax, [FLAG1]
 			dec ax
-			mov FLAG1, ax
+			mov [FLAG1], ax
 			jmp EXIT_KEY
 			
 	MOVE_DINO_DOWN: 
-		mov FLAG2, 01h
-		mov DINO_Y, 90h 
+		mov [FLAG2], 01h
+		mov [DINO_Y], 90h 
 		jmp EXIT_KEY
 	
 	EXIT_KEY:
 	RET
 	
-DINO_MOVE ENDP
+ENDP DINO_MOVE 
 
-CACTUS_DRAW PROC near
-	mov cx, CACTUS_X
-	mov dx, CACTUS_Y
-	sub dx, CACTUS_Y_SIZE
-	sub cx, CACTUS_X_SIZE
+PROC CACTUS_DRAW  near
+	mov cx, [CACTUS_X]
+	mov dx, [CACTUS_Y]
+	sub dx, [CACTUS_Y_SIZE]
+	sub cx, [CACTUS_X_SIZE]
 	CACTUS_DRAW_H:
 		mov ah, 0ch
 		mov al, 0ah
 		mov bh, 00h
 		int 10h
 		inc cx
-		cmp cx, CACTUS_X
+		cmp cx, [CACTUS_X]
 		jne CACTUS_DRAW_H
 	CACTUS_DRAW_V:
-		mov cx, CACTUS_X
-		sub cx, CACTUS_X_SIZE
+		mov cx, [CACTUS_X]
+		sub cx, [CACTUS_X_SIZE]
 		inc dx
-		cmp dx, CACTUS_Y
+		cmp dx, [CACTUS_Y]
 		jne CACTUS_DRAW_H
 	
 	RET
-CACTUS_DRAW ENDP
+ENDP CACTUS_DRAW 
 
-CACTUS_MOVE PROC near
+PROC CACTUS_MOVE  near
 	
-	cmp CACTUS_X, 08h
+	cmp [CACTUS_X], 08h
 	jng RESET
 	
-	mov ax, CACTUS_SPEED
-	sub CACTUS_X, ax
-	jmp LANJUT
+	mov ax, [CACTUS_SPEED]
+	sub [CACTUS_X], ax
+	jmp NEXT
 	RESET:
-	mov ax, GAME_WIDTH
-	mov CACTUS_X, ax
-	LANJUT:
+	mov ax, [GAME_WIDTH]
+	mov [CACTUS_X], ax
+	NEXT:
 	RET
-CACTUS_MOVE ENDP
+ENDP CACTUS_MOVE 
 
-BIRD_DRAW PROC near
-	mov cx, BIRD_X
+PROC BIRD_DRAW  near
+	mov cx, [BIRD_X]
 	cmp cx, 140h
 	jg EXIT1
-	mov dx, BIRD_Y
-	sub dx, BIRD_Y_SIZE
-	sub cx, BIRD_X_SIZE
+	mov dx, [BIRD_Y]
+	sub dx, [BIRD_Y_SIZE]
+	sub cx, [BIRD_X_SIZE]
 	BIRD_DRAW_H:
 		mov ah, 0ch
 		mov al, 06h
 		mov bh, 00h
 		int 10h
 		inc cx
-		cmp cx, BIRD_X
+		cmp cx, [BIRD_X]
 		jne BIRD_DRAW_H
 	BIRD_DRAW_V:
-		mov cx, BIRD_X
-		sub cx, BIRD_X_SIZE
+		mov cx, [BIRD_X]
+		sub cx, [BIRD_X_SIZE]
 		inc dx
-		cmp dx, BIRD_Y
+		cmp dx, [BIRD_Y]
 		jne BIRD_DRAW_H
 	EXIT1:
 	RET
-BIRD_DRAW ENDP
+ENDP BIRD_DRAW 
 
-BIRD_MOVE PROC near
+PROC BIRD_MOVE  near
 
-	cmp BIRD_X, 08h
+	cmp [BIRD_X], 08h
 	jng RESET1
 	
-	mov ax, CACTUS_SPEED
-	sub BIRD_X, ax
-	jmp LANJUT2
+	mov ax, [CACTUS_SPEED]
+	sub [BIRD_X], ax
+	jmp NEXT2
 	RESET1:
-	mov ax, GAME_WIDTH
-	mov BIRD_X, ax
-	LANJUT2:
+	mov ax, [GAME_WIDTH]
+	mov [BIRD_X], ax
+	NEXT2:
 	RET
-BIRD_MOVE ENDP
+ENDP BIRD_MOVE 
 
-COLLISION_CHECK PROC near
+PROC COLLISION_CHECK  near
 	
-	mov ax, CACTUS_X
-	sub ax, CACTUS_X_SIZE
-	cmp DINO_X, ax
+	mov ax, [CACTUS_X]
+	sub ax, [CACTUS_X_SIZE]
+	cmp [DINO_X], ax
 	jnge BIRD_CHECK
-	mov ax, DINO_X
-	sub ax, DINO_X_SIZE
-	cmp CACTUS_X, ax
+	mov ax, [DINO_X]
+	sub ax, [DINO_X_SIZE]
+	cmp [CACTUS_X], ax
 	jnge BIRD_CHECK
 	
-	mov ax, CACTUS_Y
-	sub ax, CACTUS_Y_SIZE
-	cmp DINO_Y, ax
+	mov ax, [CACTUS_Y]
+	sub ax, [CACTUS_Y_SIZE]
+	cmp [DINO_Y], ax
 	jl BIRD_CHECK
 	
-	inc EXIT_FLAG
+	inc [EXIT_FLAG]
 	jmp EXIT4
 	
 	BIRD_CHECK:
 	
-	mov ax, BIRD_X
-	sub ax, BIRD_X_SIZE
-	cmp DINO_X, ax
+	mov ax, [BIRD_X]
+	sub ax, [BIRD_X_SIZE]
+	cmp [DINO_X], ax
 	jnge EXIT4
-	mov ax, DINO_X
-	sub ax, DINO_X_SIZE
-	cmp BIRD_X, ax
+	mov ax, [DINO_X]
+	sub ax, [DINO_X_SIZE]
+	cmp [BIRD_X], ax
 	jnge EXIT4
 	
-	mov ax, BIRD_Y
-	sub ax, BIRD_Y_SIZE
-	cmp DINO_Y, ax
+	mov ax, [BIRD_Y]
+	sub ax, [BIRD_Y_SIZE]
+	cmp [DINO_Y], ax
 	jl EXIT4
 	
-	mov ax, DINO_Y
-	sub ax, DINO_Y_SIZE
-	cmp ax, BIRD_Y
+	mov ax, [DINO_Y]
+	sub ax, [DINO_Y_SIZE]
+	cmp ax, [BIRD_Y]
 	jg EXIT4
 	
-	inc EXIT_FLAG
+	inc [EXIT_FLAG]
 	EXIT4:
 	RET
-COLLISION_CHECK ENDP
+ENDP COLLISION_CHECK 
 
-DRAW_SCORE PROC near
+PROC DRAW_SCORE  near
 	mov ah, 02h
 	mov bh, 00h
 	mov dh, 01h
@@ -428,7 +425,7 @@ DRAW_SCORE PROC near
 	int 10h
 	
 	mov ah, 09h
-	lea dx, DISPLAY_TEXT1
+	lea dx, [DISPLAY_TEXT1]
 	int 21h
 	
 	mov ah, 02h
@@ -438,7 +435,7 @@ DRAW_SCORE PROC near
 	int 10h
 	
 	mov ah, 09h
-	lea dx, DISPLAY_TEXT2
+	lea dx, [DISPLAY_TEXT2]
 	int 21h	
 	
 	mov ah, 02h
@@ -448,7 +445,7 @@ DRAW_SCORE PROC near
 	int 10h
 	
 	mov ah, 09h
-	lea dx, DISPLAY_TEXT3
+	lea dx, [DISPLAY_TEXT3]
 	int 21h	
 	
 	mov ah, 02h
@@ -458,96 +455,96 @@ DRAW_SCORE PROC near
 	int 10h
 	
 	mov ah, 09h
-	lea dx, DISPLAY_TEXT4
+	lea dx, [DISPLAY_TEXT4]
 	int 21h	
 	
 	RET
-DRAW_SCORE ENDP
+ENDP DRAW_SCORE 
 
-UPDATE_SCORE PROC near
+PROC UPDATE_SCORE  near
 	
-	cmp SCORE4, 09h
+	cmp [SCORE4], 09h
 	je UPDATE_DIGIT3
-	inc SCORE4
+	inc [SCORE4]
 	mov ax, 0h
-	mov al, SCORE4
+	mov al, [SCORE4]
 	add al, 30h
 	mov [DISPLAY_TEXT4], al
 	jmp EXIT6
 	
 	UPDATE_DIGIT3:
-		mov SCORE4, 00h
+		mov [SCORE4], 00h
 		mov ax, 0h
 		add al, 30h
 		mov [DISPLAY_TEXT4], al
 		
-		cmp SCORE3, 09h
+		cmp [SCORE3], 09h
 		je UPDATE_DIGIT2
 		
-		inc SCORE3
+		inc [SCORE3]
 		mov ax, 0h
-		mov al, SCORE3
+		mov al, [SCORE3]
 		add al, 30h
 		mov [DISPLAY_TEXT3], al
 		jmp EXIT6
 		
 	UPDATE_DIGIT2:
-		mov SCORE3, 00h
+		mov [SCORE3], 00h
 		mov ax, 0h
 		add al, 30h
 		mov [DISPLAY_TEXT3], al
 		
-		cmp SCORE2, 09h
+		cmp [SCORE2], 09h
 		je UPDATE_DIGIT1
 		
-		inc SCORE2
+		inc [SCORE2]
 		mov ax, 0h
-		mov al, SCORE2
+		mov al, [SCORE2]
 		add al, 30h
 		mov [DISPLAY_TEXT2], al
 		jmp EXIT6
 		
 	UPDATE_DIGIT1:
-		mov SCORE2, 00h
+		mov [SCORE2], 00h
 		mov ax, 0h
 		add al, 30h
 		mov [DISPLAY_TEXT2], al
 		
-		inc SCORE1
+		inc [SCORE1]
 		mov ax, 0h
-		mov al, SCORE1
+		mov al, [SCORE1]
 		add al, 30h
 		mov [DISPLAY_TEXT1], al
 		jmp EXIT6
 		
 	EXIT6:
 	RET
-UPDATE_SCORE ENDP
+ENDP UPDATE_SCORE 
 
-RESET_GAME PROC near
-	mov DINO_Y, 90h
-	mov DINO_X, 20h
+PROC RESET_GAME  near
+	mov [DINO_Y], 90h
+	mov [DINO_X], 20h
 	
-	mov CACTUS_X, 140h
-	mov CACTUS_Y, 90h
+	mov [CACTUS_X], 140h
+	mov [CACTUS_Y], 90h
 	
-	mov BIRD_X, 200h
-	mov BIRD_Y, 85h
+	mov [BIRD_X], 200h
+	mov [BIRD_Y], 85h
 	
-	mov FLAG1, 0h
-	mov FLAG2, 0h
-	mov EXIT_FLAG, 0h
+	mov [FLAG1], 0h
+	mov [FLAG2], 0h
+	mov [EXIT_FLAG], 0h
 	
-	mov SCORE_TIME, 0h
+	mov [SCORE_TIME], 0h
 	
-	mov SCORE1, 0h
-	mov SCORE2, 0h
-	mov SCORE3, 0h
-	mov SCORE4, 0h
-	mov DISPLAY_TEXT1, 30h
-	mov DISPLAY_TEXT2, 30h
-	mov DISPLAY_TEXT3, 30h
-	mov DISPLAY_TEXT4, 30h
+	mov [SCORE1], 0h
+	mov [SCORE2], 0h
+	mov [SCORE3], 0h
+	mov [SCORE4], 0h
+	mov [DISPLAY_TEXT1], 30h
+	mov [DISPLAY_TEXT2], 30h
+	mov [DISPLAY_TEXT3], 30h
+	mov [DISPLAY_TEXT4], 30h
 	
 	mov ax, 00h
 	mov dx, 00h
@@ -555,31 +552,31 @@ RESET_GAME PROC near
 	mov bx, 00h
 	
 	RET
-RESET_GAME ENDP
+ENDP RESET_GAME 
 
-PUT_SCORE PROC near
+PROC PUT_SCORE  near
 	
-	mov al, SCORE3
+	mov al, [SCORE3]
 	mov bl, 10h
 	mul bl
 	mov dl, al
-	add dl, SCORE4
-	mov al, SCORE1
+	add dl, [SCORE4]
+	mov al, [SCORE1]
 	mov bl, 10h
 	mul bl
 	mov dh, al
-	add dh, SCORE2
-	mov SCORE_PRES, dx
+	add dh, [SCORE2]
+	mov [SCORE_PRES], dx
 	RET
-PUT_SCORE ENDP
+ENDP PUT_SCORE 
 
-CMP_HIGHSCORE PROC near
-	mov dx, HIGHSCORE
-	cmp dx, SCORE_PRES
+PROC CMP_HIGHSCORE  near
+	mov dx, [HIGHSCORE]
+	cmp dx, [SCORE_PRES]
 	jg EXIT7
 	
-	mov dx, SCORE_PRES
-	mov HIGHSCORE, dx
+	mov dx, [SCORE_PRES]
+	mov [HIGHSCORE], dx
 	mov al, dh
 	mov bl, 10h
 	div bl
@@ -598,10 +595,10 @@ CMP_HIGHSCORE PROC near
 	mov [DISPLAY_TEXTH4], ah
 	EXIT7:
 	RET
-CMP_HIGHSCORE ENDP
+ENDP CMP_HIGHSCORE 
 
 
-DRAW_HSCORE PROC near
+PROC DRAW_HSCORE  near
 	
 	mov ah, 02h
 	mov bh, 00h
@@ -610,7 +607,7 @@ DRAW_HSCORE PROC near
 	int 10h
 	
 	mov ah, 09h
-	lea dx, DISPLAY_TEXTH1
+	lea dx, [DISPLAY_TEXTH1]
 	int 21h
 	
 	mov ah, 02h
@@ -620,7 +617,7 @@ DRAW_HSCORE PROC near
 	int 10h
 	
 	mov ah, 09h
-	lea dx, DISPLAY_TEXTH2
+	lea dx, [DISPLAY_TEXTH2]
 	int 21h
 	
 	mov ah, 02h
@@ -630,7 +627,7 @@ DRAW_HSCORE PROC near
 	int 10h
 	
 	mov ah, 09h
-	lea dx, DISPLAY_TEXTH3
+	lea dx, [DISPLAY_TEXTH3]
 	int 21h
 	
 	mov ah, 02h
@@ -640,13 +637,13 @@ DRAW_HSCORE PROC near
 	int 10h
 	
 	mov ah, 09h
-	lea dx, DISPLAY_TEXTH4
+	lea dx, [DISPLAY_TEXTH4]
 	int 21h
 	
 	RET
-DRAW_HSCORE ENDP
+ENDP DRAW_HSCORE 
 
-PRINT_HIGHSCORE PROC near
+PROC PRINT_HIGHSCORE  near
 	
 	mov ah, 02h
 	mov bh, 00h
@@ -655,12 +652,12 @@ PRINT_HIGHSCORE PROC near
 	int 10h
 	
 	mov ah, 09h
-	lea dx, HSCR
+	lea dx, [HSCR]
 	int 21h
 	RET
-PRINT_HIGHSCORE ENDP
+ENDP PRINT_HIGHSCORE 
 
-CLEAR_SCREEN PROC near
+PROC CLEAR_SCREEN  near
 	mov ah, 00h
 	mov al, 13h
 	int 10h
@@ -671,8 +668,17 @@ CLEAR_SCREEN PROC near
 	int 10h
 	
 	RET
-CLEAR_SCREEN ENDP
+ENDP CLEAR_SCREEN 
 	
-.STARTUP
-	call main
-END
+start:
+    mov ax, @data
+    mov ds, ax
+	
+    call main
+
+
+exit:
+    mov ah, 4Ch
+    int 21h
+
+END start
