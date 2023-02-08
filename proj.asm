@@ -41,9 +41,12 @@ DATASEG
 	DISPLAY_TEXTH2 DB '0','$'
 	DISPLAY_TEXTH3 DB '0','$'
 	DISPLAY_TEXTH4 DB '0','$'
-	GAMEOVER_TEXT DB 'GAMEOVER','$'
+	GAMEOVER_TEXT DB 'GAMEOVER ):  PRESS W:','$'
 	HSCR DB 'HIGHSCORE:','$'
 	
+	starting_screen_text db "[ Welcome to Dino-run game! ]", 10,10, "Your goal is to move the dino (white cube), avoid the cacti and  birds to score as much as possible. If you let them touch  the dino, you'll lose the game!", 10,10, "Controls:", 10, "w,s - move the dino - up and down", 10,10, "Made by Einav Sh", 10,10,10, "- Press any key to start the game -$"
+	lose_screen_text db "[ You lost! ]", 10,10, "You You collided with a cactus or a bird... Oh   no... Now you'll have to do it all over again!", 10,10,10, "- Press a key to exit -$"
+
 	HIGHSCORE DW 0h
 	SCORE_PRES DW 0h
 		
@@ -57,9 +60,9 @@ MACRO GAMEOVER_GAM
 	mov dl, 01h
 	int 10h
 	
-	mov ah, 09h
-	lea dx, GAMEOVER_TEXT
-	int 21h
+    mov ah, 09h
+    mov dx, offset lose_screen_text
+    int 21h
 	
 	mov ah, 00h
 	int 16h
@@ -113,9 +116,6 @@ PROC main  near
 		
 		SCHAR:
 		call DINO_DRAW_CROUCH
-		;;;;;;;;;;;;;;;;;;;;;;;;
-		;mov FLAG2, 00h
-		
 		 
 		EXIT3:
 		call CACTUS_DRAW
@@ -128,6 +128,22 @@ PROC main  near
 	RET                          
 	
 ENDP main 
+
+proc starting_screen
+    mov ah, 09h
+    mov dx, offset starting_screen_text
+    int 21h
+
+    mov ah, 00h
+    int 16h
+
+    ret
+endp
+
+proc tone
+
+
+endp tone	
 
 PROC GROUND_DRAW  near
 	mov dl, 00h
@@ -273,6 +289,8 @@ PROC DINO_MOVE  near
 			inc ax
 			
 			mov [FLAG1], ax
+			call tone
+
 		
 		MOVEDOWN:
 			add [DINO_Y], 05h
@@ -674,6 +692,7 @@ start:
     mov ax, @data
     mov ds, ax
 	
+	call starting_screen
     call main
 
 
