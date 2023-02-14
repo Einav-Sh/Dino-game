@@ -7,9 +7,9 @@ DATASEG
 	
 	DINO_Y DW 90h
 	DINO_X DW 20h
-	DINO_X_SIZE DW 8h
-	DINO_Y_SIZE DW 10h
-	
+	DINO_X_SIZE DW 3h
+	DINO_Y_SIZE DW 100h
+
 	CACTUS_X DW 140h
 	CACTUS_Y DW 90h
 	CACTUS_X_SIZE DW 8h
@@ -17,7 +17,7 @@ DATASEG
 	CACTUS_SPEED DW 05h
 	
 	BIRD_X DW 200h
-	BIRD_Y DW 85h
+	BIRD_Y DW 79h
 	BIRD_X_SIZE DW 16h
 	BIRD_Y_SIZE DW 6h
 	
@@ -41,7 +41,7 @@ DATASEG
 	DISPLAY_TEXTH2 DB '0','$'
 	DISPLAY_TEXTH3 DB '0','$'
 	DISPLAY_TEXTH4 DB '0','$'
-	GAMEOVER_TEXT DB 'GAMEOVER ):  PRESS W:','$'
+	GAMEOVER_TEXT DB 'GAMEOVER ):','$'
 	HSCR DB 'HIGHSCORE:','$'
 	
 	starting_screen_text db "[ Welcome to Dino-run game! ]", 10,10, "Your goal is to move the dino (white cube), avoid the cacti and  birds to score as much as possible. If you let them touch  the dino, you'll lose the game!", 10,10, "Controls:", 10, "w,s - move the dino - up and down", 10,10, "Made by Einav Sh", 10,10,10, "- Press any key to start the game -$"
@@ -49,7 +49,8 @@ DATASEG
 
 	HIGHSCORE DW 0h
 	SCORE_PRES DW 0h
-		
+
+
 CODESEG
 
 MACRO GAMEOVER_GAM 
@@ -141,8 +142,7 @@ proc starting_screen
 endp
 
 proc tone
-
-
+;*************************************************************************
 endp tone	
 
 PROC GROUND_DRAW  near
@@ -176,70 +176,627 @@ PROC GROUND_DRAW  near
 	RET
 ENDP GROUND_DRAW 
 
-PROC DINO_DRAW_STAND  near
+PROC DINO_DRAW_STAND  near      
 	mov [DINO_Y_SIZE], 16h
 	mov cx, [DINO_X]
 	mov dx, [DINO_Y]
-	sub cx, [DINO_X_SIZE]
-	sub dx, [DINO_Y_SIZE]
-	DINO_DRAWB_H:
-		mov ah, 0ch
-		mov al, 0fh
-		mov bh, 00h
-		int 10h
-		inc cx
-		cmp cx, [DINO_X]
-		jne DINO_DRAWB_H
-	DINO_DRAWB_V:
-		mov cx, [DINO_X]
-		sub cx, [DINO_X_SIZE]
-		inc dx
-		cmp dx, [DINO_Y]
-		jne DINO_DRAWB_H	
+	
+	mov bh, 0h
+	mov al, 0fh
+	mov ah, 0ch
+
+	mov cx, [DINO_X]    ;1*
+	add cx, 3
+	mov dx, [DINO_Y] 
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 7
+	int 10h
+	
+	mov cx, [DINO_X]    ;2*
+	add cx, 3
+	mov dx, [DINO_Y] 
+	sub dx, 1
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 7
+	int 10h
+
+	mov cx, [DINO_X]    ;3*
+	add cx, 3
+	mov dx, [DINO_Y]
+	sub dx, 2
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 4
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 6
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 7
+	int 10h
+	
+	mov cx, [DINO_X]    ;4*
+	add cx, 2
+	mov dx, [DINO_Y]
+	sub dx, 3
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 3
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 4
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 5
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 6
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 7
+	int 10h
+	
+	mov cx, [DINO_X]    ;5*
+	add cx, 1
+	mov dx, [DINO_Y]
+	sub dx, 4
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 2
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 3
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 4
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 5
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 6
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 7
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 8
+	int 10h
+	
+	mov cx, [DINO_X]    ;6*
+	mov dx, [DINO_Y]
+	sub dx, 5
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 1
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 2
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 3
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 4
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 5
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 6
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 7
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 8
+	int 10h
+	
+	mov cx, [DINO_X]    ;7*
+	mov dx, [DINO_Y]
+	sub dx, 6
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 1
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 2
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 3
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 4
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 5
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 6
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 7
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 8
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 9
+	int 10h
+	
+	mov cx, [DINO_X]    ;8*
+	mov dx, [DINO_Y]
+	sub dx, 7
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 1
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 4
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 5
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 6
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 7
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 8
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 9
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 10
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 11
+	int 10h
+	
+	mov cx, [DINO_X]    ;9*
+	mov dx, [DINO_Y]
+	sub dx, 8
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 5
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 6
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 7
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 8
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 9
+	int 10h
+
+	mov cx, [DINO_X]    ;10*
+	mov dx, [DINO_Y]
+	sub dx, 9
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 6
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 7
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 8
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 9
+	int 10h
+
+	mov cx, [DINO_X]    ;11*
+	add cx, 7
+	mov dx, [DINO_Y]
+	sub dx, 10
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 8
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 9
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 10
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 11
+	int 10h
+	
+	mov cx, [DINO_X]    ;12*
+	add cx, 7
+	mov dx, [DINO_Y]
+	sub dx, 11
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 8
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 9
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 10
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 11
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 12
+	int 10h
+	
+	mov cx, [DINO_X]    ;13*
+	add cx, 7
+	mov dx, [DINO_Y]
+	sub dx, 12
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 8
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 9
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 10
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 11
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 12
+	int 10h
+	
+	mov cx, [DINO_X]    ;14*
+	add cx, 7
+	mov dx, [DINO_Y]
+	sub dx, 13
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 8
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 10
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 11
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 12
+	int 10h
+	
+	mov cx, [DINO_X]    ;15*
+	add cx, 8
+	mov dx, [DINO_Y]
+	sub dx, 14
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 9
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 10
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 11
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 12
+	int 10h
+	
 	RET
+
 ENDP DINO_DRAW_STAND 
 
 PROC DINO_DRAW_CROUCH  near
-	mov [DINO_Y_SIZE], 8h
 	mov cx, [DINO_X]
 	mov dx, [DINO_Y]
-	sub cx, [DINO_X_SIZE]
-	sub dx, [DINO_Y_SIZE]
-	DINO_DRAWBC_H:
-		mov ah, 0ch
-		mov al, 0fh
-		mov bh, 00h
-		int 10h
-		inc cx
-		cmp cx, [DINO_X]
-		jne DINO_DRAWBC_H
-	DINO_DRAWBC_V:
-		mov cx, [DINO_X]
-		sub cx, [DINO_X_SIZE]
-		inc dx
-		cmp dx, [DINO_Y]
-		jne DINO_DRAWBC_H
+	
+	mov bh, 0h
+	mov al, 0fh
+	mov ah, 0ch
+
+	mov cx, [DINO_X]    ;1*
+	add cx, 7
+	mov dx, [DINO_Y] 
+	int 10h
 	mov cx, [DINO_X]
-	mov dx, [DINO_Y]
-	sub dx, 8h
-	add cx, 06h
-	DINO_DRAWH_HEAD:
-		mov ah, 0ch
-		mov al, 0fh
-		mov bh, 00h
-		int 10h
-		dec cx
-		cmp cx, [DINO_X]
-		jne DINO_DRAWH_HEAD
-	DINO_DRAWV_HEAD:
-		mov cx, [DINO_X]
-		add cx, 06h
-		inc dx
-		mov bx, [DINO_Y]
-		sub bx, 5h
-		cmp dx, bx
-		mov bx, 0h
-		jne DINO_DRAWH_HEAD
+	add cx, 18
+	int 10h
+
+	mov cx, [DINO_X]    ;2*
+	add cx, 6
+	mov dx, [DINO_Y] 
+	sub dx, 1
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 7
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 16
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 17
+	int 10h
+	
+	mov cx, [DINO_X]    ;3*
+	add cx, 6
+	mov dx, [DINO_Y] 
+	sub dx, 2
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 7
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 8
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 9
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 10
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 11
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 12
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 13
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 14
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 15
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 16
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 17
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 20
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 21
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 22
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 23
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 24
+	int 10h
+
+	mov cx, [DINO_X]    ;4*
+	add cx, 4
+	mov dx, [DINO_Y] 
+	sub dx, 3
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 5
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 6
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 7
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 8
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 9
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 10
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 11
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 12
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 13
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 14
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 15
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 16
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 17
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 18
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 19
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 20
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 21
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 22
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 23
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 24
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 25
+	int 10h
+	
+	mov cx, [DINO_X]    ;5*
+	add cx, 1
+	mov dx, [DINO_Y] 
+	sub dx, 4
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 2
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 3
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 4
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 5
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 6
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 7
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 8
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 9
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 10
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 11
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 12
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 13
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 14
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 15
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 16
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 17
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 18
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 19
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 20
+	int 10h
+	;mov cx, [DINO_X]
+	;add cx, 21
+	;int 10h
+	mov cx, [DINO_X]
+	add cx, 22
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 23
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 24
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 25
+	int 10h
+		
+	mov cx, [DINO_X]    ;6*
+	mov dx, [DINO_Y] 
+	sub dx, 5
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 1
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 2
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 3
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 8
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 9
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 10
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 11
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 12
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 13
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 14
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 15
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 16
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 20
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 21
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 22
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 21
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 22
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 23
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 24
+	int 10h
+	mov cx, [DINO_X]
+	add cx, 25
+	int 10h
+	
+	mov cx, [DINO_X]    ;7*
+	mov dx, [DINO_Y] 
+	sub dx, 6
+	int 10h
+
 	RET
 	
 ENDP DINO_DRAW_CROUCH  
@@ -261,6 +818,10 @@ PROC DINO_MOVE  near
 	
 	cmp al, 73h
 	je MOVE_DINO_DOWN
+	
+	cmp al,1bh
+	mov ax,4c00h
+	int 21h
 
 	
 	jne EXIT_KEY
@@ -289,7 +850,6 @@ PROC DINO_MOVE  near
 			inc ax
 			
 			mov [FLAG1], ax
-			call tone
 
 		
 		MOVEDOWN:
@@ -313,24 +873,161 @@ PROC DINO_MOVE  near
 ENDP DINO_MOVE 
 
 PROC CACTUS_DRAW  near
-	mov cx, [CACTUS_X]
-	mov dx, [CACTUS_Y]
-	sub dx, [CACTUS_Y_SIZE]
-	sub cx, [CACTUS_X_SIZE]
-	CACTUS_DRAW_H:
-		mov ah, 0ch
-		mov al, 0ah
-		mov bh, 00h
-		int 10h
-		inc cx
-		cmp cx, [CACTUS_X]
-		jne CACTUS_DRAW_H
-	CACTUS_DRAW_V:
-		mov cx, [CACTUS_X]
-		sub cx, [CACTUS_X_SIZE]
-		inc dx
-		cmp dx, [CACTUS_Y]
-		jne CACTUS_DRAW_H
+	mov bh, 0h
+	mov al, 0ah
+	mov ah, 0ch
+
+	mov cx, [CACTUS_X]    ;1*
+	add cx, 2
+	mov dx, [CACTUS_Y] 
+	int 10h
+	mov cx, [CACTUS_X]    
+	add cx, 3
+	int 10h
+
+	mov cx, [CACTUS_X]    ;2*
+	add cx, 2
+	mov dx, [CACTUS_Y] 
+	sub dx, 1
+	int 10h
+	mov cx, [CACTUS_X]    
+	add cx, 3
+	int 10h
+	
+	mov cx, [CACTUS_X]    ;3*
+	add cx, 2
+	mov dx, [CACTUS_Y] 
+	sub dx, 2
+	int 10h
+	mov cx, [CACTUS_X]    
+	add cx, 3
+	int 10h
+
+	mov cx, [CACTUS_X]    ;4*
+	add cx, 2
+	mov dx, [CACTUS_Y] 
+	sub dx, 3
+	int 10h
+	mov cx, [CACTUS_X]    
+	add cx, 3
+	int 10h
+
+	mov cx, [CACTUS_X]    ;5*
+	add cx, 2
+	mov dx, [CACTUS_Y] 
+	sub dx, 4
+	int 10h
+	mov cx, [CACTUS_X]    
+	add cx, 3
+	int 10h
+	
+	mov cx, [CACTUS_X]    ;6*
+	add cx, 0
+	mov dx, [CACTUS_Y] 
+	sub dx, 5
+	int 10h
+	mov cx, [CACTUS_X]    
+	add cx, 1
+	int 10h
+	mov cx, [CACTUS_X]    
+	add cx, 2
+	int 10h
+	mov cx, [CACTUS_X]    
+	add cx, 3
+	int 10h
+	
+	mov cx, [CACTUS_X]    ;7*
+	add cx, 0
+	mov dx, [CACTUS_Y] 
+	sub dx, 6
+	int 10h
+	mov cx, [CACTUS_X]    
+	add cx, 2
+	int 10h
+	mov cx, [CACTUS_X]    
+	add cx, 3
+	int 10h
+	mov cx, [CACTUS_X]    
+	add cx, 4
+	int 10h
+	
+	mov cx, [CACTUS_X]    ;8*
+	add cx, 0
+	mov dx, [CACTUS_Y] 
+	sub dx, 7
+	int 10h
+	mov cx, [CACTUS_X]    
+	add cx, 2
+	int 10h
+	mov cx, [CACTUS_X]    
+	add cx, 3
+	int 10h
+	mov cx, [CACTUS_X]    
+	add cx, 5
+	int 10h
+	
+	mov cx, [CACTUS_X]    ;9*
+	add cx, 0
+	mov dx, [CACTUS_Y] 
+	sub dx, 8
+	int 10h
+	mov cx, [CACTUS_X]    
+	add cx, 2
+	int 10h
+	mov cx, [CACTUS_X]    
+	add cx, 3
+	int 10h
+	mov cx, [CACTUS_X]    
+	add cx, 5
+	int 10h
+	
+	mov cx, [CACTUS_X]    ;10*
+	add cx, 0
+	mov dx, [CACTUS_Y] 
+	sub dx, 9
+	int 10h
+	mov cx, [CACTUS_X]    
+	add cx, 2
+	int 10h
+	mov cx, [CACTUS_X]    
+	add cx, 3
+	int 10h
+	mov cx, [CACTUS_X]    
+	add cx, 5
+	int 10h
+	
+	mov cx, [CACTUS_X]    ;11*
+	add cx, 2
+	mov dx, [CACTUS_Y] 
+	sub dx, 10
+	int 10h
+	mov cx, [CACTUS_X]    
+	add cx, 3
+	int 10h
+	mov cx, [CACTUS_X]    
+	add cx, 5
+	int 10h
+
+	mov cx, [CACTUS_X]    ;12*
+	add cx, 2
+	mov dx, [CACTUS_Y] 
+	sub dx, 11
+	int 10h
+	mov cx, [CACTUS_X]    
+	add cx, 3
+	int 10h
+	mov cx, [CACTUS_X]    
+	add cx, 5
+	int 10h
+
+	mov cx, [CACTUS_X]    ;13*
+	add cx, 2
+	mov dx, [CACTUS_Y] 
+	sub dx, 12
+	int 10h
+	mov cx, [CACTUS_X]    
+	add cx, 3
+	int 10h		
 	
 	RET
 ENDP CACTUS_DRAW 
@@ -351,27 +1048,178 @@ PROC CACTUS_MOVE  near
 ENDP CACTUS_MOVE 
 
 PROC BIRD_DRAW  near
+	
+	mov bh, 0h
+	mov al, 06h
+	mov ah, 0ch
+
+	mov cx, [BIRD_X]    ;1*
+	add cx, 8
+	mov dx, [BIRD_Y] 
+	int 10h
+
+	mov cx, [BIRD_X]    ;2*
+	add cx, 8
+	mov dx, [BIRD_Y] 
+	sub dx, 1
+	int 10h
 	mov cx, [BIRD_X]
-	cmp cx, 140h
-	jg EXIT1
-	mov dx, [BIRD_Y]
-	sub dx, [BIRD_Y_SIZE]
-	sub cx, [BIRD_X_SIZE]
-	BIRD_DRAW_H:
-		mov ah, 0ch
-		mov al, 06h
-		mov bh, 00h
-		int 10h
-		inc cx
-		cmp cx, [BIRD_X]
-		jne BIRD_DRAW_H
-	BIRD_DRAW_V:
-		mov cx, [BIRD_X]
-		sub cx, [BIRD_X_SIZE]
-		inc dx
-		cmp dx, [BIRD_Y]
-		jne BIRD_DRAW_H
-	EXIT1:
+	add cx, 9
+	int 10h
+
+	mov cx, [BIRD_X]    ;3*
+	add cx, 8
+	mov dx, [BIRD_Y] 
+	sub dx, 2
+	int 10h
+	mov cx, [BIRD_X]
+	add cx, 9
+	int 10h
+	mov cx, [BIRD_X]
+	add cx, 10
+	int 10h
+	mov cx, [BIRD_X]
+	add cx, 11
+	int 10h
+
+	mov cx, [BIRD_X]    ;4*
+	add cx, 8
+	mov dx, [BIRD_Y] 
+	sub dx, 3
+	int 10h
+	mov cx, [BIRD_X]
+	add cx, 9
+	int 10h
+	mov cx, [BIRD_X]
+	add cx, 10
+	int 10h
+	mov cx, [BIRD_X]
+	add cx, 11
+	int 10h
+	mov cx, [BIRD_X]
+	add cx, 12
+	int 10h
+	mov cx, [BIRD_X]
+	add cx, 13
+	int 10h
+	mov cx, [BIRD_X]
+	add cx, 14
+	int 10h
+	mov cx, [BIRD_X]
+	add cx, 15
+	int 10h
+	mov cx, [BIRD_X]
+	add cx, 16
+	int 10h
+	mov cx, [BIRD_X]
+	add cx, 17
+	int 10h
+	
+	mov cx, [BIRD_X]    ;5*
+	add cx, 7
+	mov dx, [BIRD_Y] 
+	sub dx, 4
+	int 10h
+	mov cx, [BIRD_X]
+	add cx, 8
+	int 10h
+	mov cx, [BIRD_X]
+	add cx, 9
+	int 10h
+	mov cx, [BIRD_X]
+	add cx, 10
+	int 10h
+	mov cx, [BIRD_X]
+	add cx, 11
+	int 10h
+	mov cx, [BIRD_X]
+	add cx, 12
+	int 10h
+	mov cx, [BIRD_X]
+	add cx, 13
+	int 10h
+	mov cx, [BIRD_X]
+	add cx, 14
+	int 10h
+	mov cx, [BIRD_X]
+	add cx, 15
+	int 10h
+	mov cx, [BIRD_X]
+	add cx, 16
+	int 10h
+	mov cx, [BIRD_X]
+	add cx, 17
+	int 10h
+	mov cx, [BIRD_X]
+	add cx, 18
+	int 10h
+	
+	mov cx, [BIRD_X]    ;6*
+	add cx, 5
+	mov dx, [BIRD_Y] 
+	sub dx, 5
+	int 10h
+	mov cx, [BIRD_X]
+	add cx, 6
+	int 10h
+	mov cx, [BIRD_X]
+	add cx, 7
+	int 10h
+	mov cx, [BIRD_X]
+	add cx, 8
+	int 10h
+	mov cx, [BIRD_X]
+	add cx, 9
+	int 10h
+	mov cx, [BIRD_X]
+	add cx, 10
+	int 10h
+	mov cx, [BIRD_X]
+	add cx, 11
+	int 10h
+	mov cx, [BIRD_X]
+	add cx, 12
+	int 10h
+	mov cx, [BIRD_X]
+	add cx, 13
+	int 10h
+	mov cx, [BIRD_X]
+	add cx, 14
+	int 10h
+	
+	mov cx, [BIRD_X]    ;7*
+	add cx, 0
+	mov dx, [BIRD_Y] 
+	sub dx, 6
+	int 10h
+	mov cx, [BIRD_X]
+	add cx, 1
+	int 10h
+	mov cx, [BIRD_X]
+	add cx, 2
+	int 10h
+	mov cx, [BIRD_X]
+	add cx, 3
+	int 10h
+	mov cx, [BIRD_X]
+	add cx, 4
+	int 10h
+	mov cx, [BIRD_X]
+	add cx, 5
+	int 10h
+
+	mov cx, [BIRD_X]    ;8*
+	add cx, 2
+	mov dx, [BIRD_Y] 
+	sub dx, 7
+	int 10h
+	mov cx, [BIRD_X]
+	add cx, 3
+	int 10h
+	mov cx, [BIRD_X]
+	add cx, 4
+	int 10h
+	
 	RET
 ENDP BIRD_DRAW 
 
