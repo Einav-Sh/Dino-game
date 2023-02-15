@@ -45,11 +45,13 @@ DATASEG
 	HSCR DB 'HIGHSCORE:','$'
 	
 	starting_screen_text db "[ Welcome to Dino-run game! ]", 10,10, "Your goal is to move the dino (white cube), avoid the cacti and  birds to score as much as possible. If you let them touch  the dino, you'll lose the game!", 10,10, "Controls:", 10, "w,s - move the dino - up and down", 10,10, "Made by Einav Sh", 10,10,10, "- Press any key to start the game -$"
-	lose_screen_text db "[ You lost! ]", 10,10, "You You collided with a cactus or a bird... Oh   no... Now you'll have to do it all over again!", 10,10,10, "- Press a key to exit -$"
+	lose_screen_text db 10, "[ You lost! ]", 10,10, "You You collided with a cactus or a bird... Oh   no... Now you'll have to do it all over again!", 10,10,10, "- Press a key to exit -$"
 
 	HIGHSCORE DW 0h
 	SCORE_PRES DW 0h
-
+	
+	;random:
+	RANDOM_NUM DW ?
 
 CODESEG
 
@@ -140,10 +142,6 @@ proc starting_screen
 
     ret
 endp
-
-proc tone
-;*************************************************************************
-endp tone	
 
 PROC GROUND_DRAW  near
 	mov dl, 00h
@@ -711,9 +709,6 @@ PROC DINO_DRAW_CROUCH  near
 	mov cx, [DINO_X]
 	add cx, 20
 	int 10h
-	;mov cx, [DINO_X]
-	;add cx, 21
-	;int 10h
 	mov cx, [DINO_X]
 	add cx, 22
 	int 10h
